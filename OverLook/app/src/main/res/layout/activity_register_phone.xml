@@ -1,0 +1,88 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/whites"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/btn_margin"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/widgets_height"
+            android:layout_marginBottom="@dimen/btn_margin"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="@dimen/tv_zoneNumber_width"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/btn_text_size"
+                android:gravity="center"
+                android:background="@drawable/border_blue_bg"
+                android:text="@string/tv_register_phone"
+                android:textColor="@color/blue"
+                android:layout_gravity="center"/>
+
+            <EditText
+                android:id="@+id/et_phonenumber_register"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_blue_bg"
+                android:textColor="@color/blue"
+                android:paddingLeft="@dimen/btn_margin"
+                android:paddingRight="@dimen/btn_margin"
+                android:textSize="@dimen/btn_text_size"
+                android:inputType="number" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/widgets_height"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_verification"
+                android:layout_width="@dimen/tv_zoneNumber_width"
+                android:layout_height="match_parent"
+                android:background="@drawable/btn_blue_bg"
+                android:text="@string/btn_password_verificaton"
+                android:textColor="@color/whites"
+                android:textSize="@dimen/btn_text_size"
+                android:onClick="getVerification"/>
+
+            <EditText
+                android:id="@+id/et_security"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/btn_text_size"
+                android:textColor="@color/blue"
+                android:paddingLeft="@dimen/btn_margin"
+                android:paddingRight="@dimen/btn_margin"
+                android:background="@drawable/border_blue_bg"
+                android:inputType="number"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/widgets_height"
+        android:text="@string/btn_next"
+        android:textColor="@color/whites"
+        android:layout_marginLeft="@dimen/btn_margin"
+        android:layout_marginRight="@dimen/btn_margin"
+        android:background="@drawable/btn_blue_bg"
+        android:textSize="@dimen/btn_text_size"
+        android:onClick="clickNextButton" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/widgets_height"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+
+</LinearLayout>

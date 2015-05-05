@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="org.youth.overlook.activity.InvitationActivity">
+    <item
+        android:id="@+id/action_complete"
+        android:title="@string/action_complete"
+        android:showAsAction="always" />
+</menu>

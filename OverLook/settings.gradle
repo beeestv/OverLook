@@ -1,0 +1,1 @@
+include ':libs:library',':libs:actionbarsherlock',':app',':libs:sMSSDK'
