@@ -1,5 +1,7 @@
 package org.youth.overlook.utils;
 
+import android.util.Log;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -71,11 +73,13 @@ public class HttpUtil {
             }
         }
         try {
-            UrlEncodedFormEntity entity = new UrlEncodedFormEntity(list, encode);// 将请求的参数封装到请求体中
 
+            UrlEncodedFormEntity entity = new UrlEncodedFormEntity(list, encode);// 将请求的参数封装到请求体中
             // 定义post请求对象
             HttpPost httpPost = new HttpPost(path);
             httpPost.setEntity(entity);
+
+            //TODO:BUG点
             // 执行post请求
             DefaultHttpClient client = new DefaultHttpClient();
             HttpResponse httpResponse = client.execute(httpPost);

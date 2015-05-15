@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/E:/CodeStore/Android/OverLook/libs/library/build/intermediates/exploded-aar/OverLook.libs/actionbarsherlock/unspecified/res/values-w500dp-v13/values.xml -->
+    <eat-comment/>
+    <integer name="abs__max_action_buttons">4</integer>
+</resources>

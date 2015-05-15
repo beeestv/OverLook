@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import org.youth.overlook.R;
-import org.youth.overlook.fragment.InvatationFragment;
+import org.youth.overlook.fragment.InvitationFragment;
 
-public class InvitationActivity extends Activity implements InvatationFragment.OnFragmentInteractionListener {
+public class InvitationActivity extends Activity implements InvitationFragment.OnFragmentInteractionListener {
+
+    private InvitationFragment invitationFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +36,15 @@ public class InvitationActivity extends Activity implements InvatationFragment.O
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()){
             case R.id.action_complete:
-                finish();
+                invitationFragment = (InvitationFragment) getFragmentManager().findFragmentById(R.id.contact_fragment);
+                String actionname = invitationFragment.actionName.getText().toString();
+                if(actionname == null || actionname.length()==0){
+                    Toast.makeText(this, "活动名称不可为空", Toast.LENGTH_SHORT).show();
+                }else {
+                    invitationFragment.buildAction();
+                    item.setEnabled(false);//点击后按钮不可用，等待数据库响应
+                    invitationFragment.showDialog();
+                }
                 return true;
             case android.R.id.home:
                 finish();

@@ -5,7 +5,7 @@
     tools:context="org.youth.overlook.activity.InvitationActivity">
 
     <fragment
-        android:name="org.youth.overlook.fragment.InvatationFragment"
+        android:name="org.youth.overlook.fragment.InvitationFragment"
         android:id="@+id/contact_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

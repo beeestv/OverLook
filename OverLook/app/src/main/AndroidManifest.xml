@@ -25,8 +25,7 @@
             android:value="b9fe014c800e7cfe7e130df31a5ac04c" />
 
         <activity
-            android:name=".activity.MainActivity"
-            android:label="@string/app_name" />
+            android:name=".activity.MainActivity"/>
         <activity
             android:name=".activity.LoginActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar" />

@@ -27,6 +27,7 @@
 
     <string name="hello_world">Hello world!</string>
 
+    <string name="action_name">活动名称</string>
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_invitation">InvitationActivity</string>

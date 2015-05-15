@@ -8,7 +8,6 @@
       <module fileurl="file://$PROJECT_DIR$/libs/library/library.iml" filepath="$PROJECT_DIR$/libs/library/library.iml" />
       <module fileurl="file://$PROJECT_DIR$/libs/libs.iml" filepath="$PROJECT_DIR$/libs/libs.iml" />
       <module fileurl="file://$PROJECT_DIR$/libs/sMSSDK/sMSSDK.iml" filepath="$PROJECT_DIR$/libs/sMSSDK/sMSSDK.iml" />
-      <module fileurl="file://$PROJECT_DIR$/libs/smssdk/smssdk.iml" filepath="$PROJECT_DIR$/libs/smssdk/smssdk.iml" />
     </modules>
   </component>
 </project>

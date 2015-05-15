@@ -3,6 +3,7 @@ package org.youth.overlook.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -15,11 +16,18 @@ import android.widget.ImageView;
 
 import org.youth.overlook.R;
 import org.youth.overlook.utils.PreferenceUtil;
+import org.youth.overlook.utils.SQLUtil;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class WelcomeActivity extends Activity {
 
     private Context context;
     private Handler handler = new Handler();
+    private PreferenceUtil preferenceUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +43,10 @@ public class WelcomeActivity extends Activity {
         anim.setAnimationListener(new AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                handler.postDelayed(new Runnable() {
+                handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        PreferenceUtil preferenceUtil = new PreferenceUtil(context);
+                        preferenceUtil = new PreferenceUtil(context);
                         String phoneNumber = preferenceUtil.getValue("phoneNumber");
                         String password = preferenceUtil.getValue("password");
                         boolean didRemembered = Boolean.parseBoolean(preferenceUtil.getValue("didRemembered"));
@@ -53,7 +61,7 @@ public class WelcomeActivity extends Activity {
                             finish();
                         }
                     }
-                },2000);
+                });
             }
 
             @Override

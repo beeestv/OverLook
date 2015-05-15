@@ -2,9 +2,9 @@ package org.youth.overlook.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
@@ -12,44 +12,52 @@ import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 import org.youth.overlook.R;
 import org.youth.overlook.fragment.MapFragment;
 import org.youth.overlook.fragment.MenuFragment;
+import org.youth.overlook.utils.PreferenceUtil;
 
 import cn.smssdk.SMSSDK;
 
 
-public class MainActivity extends SlidingFragmentActivity {
+public class MainActivity extends SlidingFragmentActivity implements MenuFragment.RefreshActionListener, MapFragment.ActionBarTitleChangeListener {
 
-    private SlidingMenu menu;
+    private final int REQUEST_INVITATION = 1;
+
+    public SlidingMenu menu;
     private MainActivity myActivity;
-    private MapFragment myContext;
+    public MapFragment myMapFragment;
+    public MenuFragment myMenuFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        SMSSDK.initSDK(this, "69a088afb802", "decbbe716fb138e5f18da2f5d309e576");//初始化短信调用SDK
-        
-        myActivity = this;
+        myMenuFragment = new MenuFragment();
+        myMenuFragment.refreshActionListener = this;
+        myMapFragment = new MapFragment();
+        myMapFragment.actionBarTitleChangeListener = this;
 
-        myContext = new MapFragment();
+
+        SMSSDK.initSDK(this, "69a088afb802", "decbbe716fb138e5f18da2f5d309e576");//初始化短信调用SDK
+
+        myActivity = this;
 
         // set the Above View
         setContentView(R.layout.activity_frame);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.activity_frame, myContext)
+                .replace(R.id.activity_frame, myMapFragment)
                 .commit();
 
         // set the Behind View
         setBehindContentView(R.layout.slidingmenu_frame);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.slidingmenu_frame, new MenuFragment())
+                .replace(R.id.slidingmenu_frame, myMenuFragment)
                 .commit();
         initSlidingMenu();
     }
 
-    private void initSlidingMenu(){
+    private void initSlidingMenu() {
         menu = getSlidingMenu();
         menu.setMode(SlidingMenu.LEFT);
         menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
@@ -64,8 +72,6 @@ public class MainActivity extends SlidingFragmentActivity {
             @Override
             public void onClose() {
                 getActionBar().setDisplayShowHomeEnabled(true);
-                getActionBar().setDisplayShowTitleEnabled(true);
-                Log.d("jdbc","slidingmenu close");
             }
         });
     }
@@ -86,8 +92,6 @@ public class MainActivity extends SlidingFragmentActivity {
             case android.R.id.home: {
                 menu.toggle();
                 getActionBar().setDisplayShowHomeEnabled(false);
-                getActionBar().setDisplayShowTitleEnabled(false);
-                Log.d("jdcb", "头像和标题隐藏了");
                 return true;
             }
             case R.id.action_new:
@@ -98,10 +102,33 @@ public class MainActivity extends SlidingFragmentActivity {
         }
     }
 
-    private boolean inviteMembers(){
+    private void inviteMembers() {
         Intent intent = new Intent(myActivity, InvitationActivity.class);
-        myActivity.startActivity(intent);
-        return true;
+        myActivity.startActivityForResult(intent, REQUEST_INVITATION);
+    }
+
+    /**
+     * InvitationActivty调用finish()方法后调用
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_INVITATION) {
+            if (resultCode == REQUEST_INVITATION) {
+                refreshActionList();
+            }
+        }
+    }
+
+    /**
+     * 通过MenuFragment的异步任务刷新ActionList
+     */
+    public void refreshActionList(){
+        MenuFragment.LoadTask loadTask = myMenuFragment.new LoadTask();
+        loadTask.execute();
     }
 
     @Override
@@ -109,7 +136,7 @@ public class MainActivity extends SlidingFragmentActivity {
         super.onSaveInstanceState(outState);
     }
 
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
     }
 
@@ -127,13 +154,35 @@ public class MainActivity extends SlidingFragmentActivity {
         super.onDestroy();
     }
 
+    private long lastPressTime;
+
+    /**
+     * 返回键调用的方法
+     */
     @Override
     public void onBackPressed() {
         if (menu.isMenuShowing()) {
             menu.showContent();
         } else {
-            super.onBackPressed();
+            /*两次按键间隔小于3500millis则退出*/
+            if (System.currentTimeMillis() - lastPressTime > 2000) {
+                Toast.makeText(myActivity, "再次点击返回键退出", Toast.LENGTH_SHORT).show();
+                lastPressTime = System.currentTimeMillis();
+            } else {
+                System.exit(0);
+            }
         }
+    }
+
+    @Override
+    public void onChangeTitle(String title) {
+        getActionBar().setTitle(title);
+        myMapFragment.actionname = title;
+    }
+
+    @Override
+    public void refreshAction() {
+        myMapFragment.refreshMap();
     }
 
 }

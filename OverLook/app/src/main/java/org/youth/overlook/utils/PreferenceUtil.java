@@ -37,4 +37,12 @@ public class PreferenceUtil {
     public String getValue(String key) {
         return sharedPreferences.getString(key, null);
     }
+
+    /**
+     * Çå¿ÕsharePreference
+     */
+    public void clear(){
+        editor.clear();
+        editor.commit();
+    }
 }
