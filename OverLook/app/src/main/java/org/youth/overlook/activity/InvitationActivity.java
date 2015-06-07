@@ -2,8 +2,13 @@ package org.youth.overlook.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Layout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.youth.overlook.R;
@@ -13,6 +18,7 @@ public class InvitationActivity extends Activity implements InvitationFragment.O
 
     private InvitationFragment invitationFragment;
 
+    public String invitation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,6 +26,13 @@ public class InvitationActivity extends Activity implements InvitationFragment.O
         getActionBar().setDisplayShowHomeEnabled(false);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setTitle("返回");
+        invitation= getIntent().getStringExtra("invitation");
+        if(invitation!=null){
+            Log.d("jdbc", getIntent().getStringExtra("invitation"));
+            EditText actionname = (EditText)findViewById(R.id.action_name);
+            actionname.setHint("无需填写活动名称");
+            actionname.setEnabled(false);
+        }
     }
 
     @Override
@@ -38,7 +51,7 @@ public class InvitationActivity extends Activity implements InvitationFragment.O
             case R.id.action_complete:
                 invitationFragment = (InvitationFragment) getFragmentManager().findFragmentById(R.id.contact_fragment);
                 String actionname = invitationFragment.actionName.getText().toString();
-                if(actionname == null || actionname.length()==0){
+                if(invitation==null && (actionname == null || actionname.length()==0)){
                     Toast.makeText(this, "活动名称不可为空", Toast.LENGTH_SHORT).show();
                 }else {
                     invitationFragment.buildAction();

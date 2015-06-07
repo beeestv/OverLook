@@ -95,7 +95,6 @@ public class SQLUtil {
     }
 
     /**
-     * SQL查询
      * @param sql
      * @param params
      * @return

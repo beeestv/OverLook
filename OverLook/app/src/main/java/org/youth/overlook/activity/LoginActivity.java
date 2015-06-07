@@ -56,9 +56,9 @@ public class LoginActivity extends Activity {
                     if (canLogin == true) {
                         dismissProgressDialog();
                         preferenceUtil.putValues("didRemembered", String.valueOf(true));
-                        preferenceUtil.putValues("phoneNumber", phoneNumber);
+                        preferenceUtil.putValues("phonenumber", phoneNumber);
                         preferenceUtil.putValues("password", password);
-                        Log.d("jdbc", preferenceUtil.getValue("phoneNumber"));
+                        Log.d("jdbc", preferenceUtil.getValue("phonenumber"));
                         Log.d("jdbc", preferenceUtil.getValue("password"));
                         Intent intent = new Intent(myContext, MainActivity.class);
                         myContext.startActivity(intent);
@@ -167,7 +167,7 @@ public class LoginActivity extends Activity {
                     String phone = (String) phoneMap.get("phone");
                     boolean newAccount = Boolean.valueOf(phoneMap.get("newAccount").toString());
                     Intent intent = new Intent(myContext, RegisterPasswordActivity.class);
-                    intent.putExtra("phoneNumber", phone);
+                    intent.putExtra("phonenumber", phone);
                     intent.putExtra("newAccount", newAccount);
                     myContext.startActivity(intent);
                 }

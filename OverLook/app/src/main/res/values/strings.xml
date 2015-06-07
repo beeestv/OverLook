@@ -3,7 +3,8 @@
 
     <string name="action_complete">OK</string>
     <string name="action_settings">Settings</string>
-    <string name="action_new">New</string>
+    <string name="action_new">邀请成员</string>
+    <string name="action_quit">退出活动</string>
     <string name="app_name">OverLook</string>
     <!-- Login Layout-->
     <string name="hint_account">手机号</string>

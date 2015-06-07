@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import org.youth.overlook.R;
+import org.youth.overlook.activity.InvitationActivity;
 import org.youth.overlook.utils.PreferenceUtil;
 import org.youth.overlook.utils.SQLUtil;
 
@@ -47,7 +48,7 @@ public class InvitationFragment extends Fragment {
 
     private ProgressDialog progDialog;
 
-    private long actionid;
+    private String actionid;
     private boolean didSuccess;
 
     public EditText actionName;
@@ -184,7 +185,7 @@ public class InvitationFragment extends Fragment {
                         Map<String, String> data = new HashMap<String, String>();
                         data.put("name", name);
                         data.put("isSelected", String.valueOf(false));
-                        data.put("phoneNumber", phonenumber);
+                        data.put("phonenumber", phonenumber);
                         contactsList.add(data);
                         contactsNameList.add(name);
                     }
@@ -246,53 +247,70 @@ public class InvitationFragment extends Fragment {
                 Looper.prepare();
 
                 PreferenceUtil preferenceUtil = new PreferenceUtil(getActivity());
-                actionid = System.currentTimeMillis();
-                String builder = preferenceUtil.getValue("phoneNumber");
-                String sql = "insert into actioninfo (actionid,builder,actionname) values (?,?,?)";
                 List<Object> params = new ArrayList<Object>();
-                params.add(actionid);
-                params.add(builder);
-                params.add(actionName.getText().toString());
-                try {
-
-                    if (sqlUtil.updateByPrepareStatment(sql, params)) {
-                        params.clear();
-                        boolean flag = false;//创建者是否写入
-                        Map<String, String> contact;
-                        for (int i = 0; i<contactsList.size();i++) {
-                            contact = contactsList.get(i);
-                            String phonenumber = contact.get("phoneNumber");
-                            if (phonenumber.equals(builder) || Boolean.parseBoolean(contact.get("isSelected"))) {
-                                params = new ArrayList<Object>();
-                                params.add(phonenumber);
-                                params.add(actionid);
-                                if (phonenumber.equals(builder)) {
-                                    flag = true;
-                                    Log.d("jdbc","被选择或是本机     "+flag);
-                                    sql = "insert into useraction (phonenumber,actionid,didjoin) values (?,?,'1')";
-                                } else {
-                                    sql = "insert into useraction (phonenumber,actionid) values (?,?)";
-                                }
-                                sqlUtil.updateByPrepareStatment(sql, params);
-                            }
-                        }
-                        dismissDialog();
-                        Log.d("jdbc", "活动创建成功");
-                        Intent data = new Intent();
-                        data.putExtra("actionid", String.valueOf(actionid));
-                        getActivity().setResult(1, data);
-                        getActivity().finish();
-                    } else {
-                        dismissDialog();
-                        Log.d("jdbc", "actionifo写入失败");
+                String builder = null;
+                boolean flag = true;
+                if(((InvitationActivity)getActivity()).invitation!=null){
+                    actionid = preferenceUtil.getValue("actionid");
+                    builder = "";
+                }else {
+                    actionid = String.valueOf(System.currentTimeMillis());
+                    builder = preferenceUtil.getValue("phonenumber");
+                    String sql = "insert into actioninfo (actionid,builder,actionname) values (?,?,?)";
+                    params.add(actionid);
+                    params.add(builder);
+                    params.add(actionName.getText().toString());
+                    try {
+                        flag = sqlUtil.updateByPrepareStatment(sql, params);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
                     }
-                } catch (SQLException e) {
-                    e.printStackTrace();
                 }
-
-
+                writeData(flag,builder,actionid);
             }
         }.start();
+    }
+
+    private void writeData(boolean bool,String builder,String actionid){
+            if (bool) {
+                String sql =null;
+                List<Object> params = new ArrayList<Object>();
+                boolean flag = false;//创建者是否写入
+                Map<String, String> contact;
+                for (int i = 0; i<contactsList.size();i++) {
+                    contact = contactsList.get(i);
+                    String phonenumber = contact.get("phonenumber");
+                    if (phonenumber.equals(builder) || Boolean.parseBoolean(contact.get("isSelected"))) {
+                        params = new ArrayList<Object>();
+                        params.add(phonenumber);
+                        params.add(actionid);
+                        if (phonenumber.equals(builder)) {
+                            flag = true;
+                            Log.d("jdbc","被选择或是本机     "+flag);
+                            sql = "insert into useraction (phonenumber,actionid,didjoin) values (?,?,'1')";
+                        } else {
+                            sql = "insert into useraction (phonenumber,actionid) values (?,?)";
+                        }
+                        try {
+                            sqlUtil.updateByPrepareStatment(sql, params);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }finally {
+                            dismissDialog();
+                            continue;
+                        }
+                    }
+                }
+                dismissDialog();
+                Log.d("jdbc", "活动创建成功");
+                Intent data = new Intent();
+                data.putExtra("actionid", String.valueOf(actionid));
+                getActivity().setResult(1, data);
+                getActivity().finish();
+            } else {
+                dismissDialog();
+                Log.d("jdbc", "actionifo写入失败");
+            }
     }
 
 }

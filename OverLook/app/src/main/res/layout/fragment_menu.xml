@@ -7,20 +7,40 @@
     android:gravity="center_horizontal">
 
     <ImageView
-        android:src="@drawable/smssdk_sharesdk_icon"
+        android:src="@drawable/ic_launcher"
         android:layout_width="120dp"
         android:layout_height="120dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="5dp"
+        android:background="#ffffff"></LinearLayout>
 
     <ListView
         android:id="@+id/action_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/btn_newaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="+"
+        android:textColor="@color/whites"
+        android:textSize="20dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="5dp"
+        android:background="#ffffff"></LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/btn_margin"
+        android:layout_margin="10dp"
         android:orientation="vertical">
 
         <Button
@@ -29,21 +49,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/transparent_btn"
-            android:textColor="@color/whites"/>
+            android:textColor="@color/whites" />
+
         <Button
             android:id="@+id/btn_changepassword"
             android:text="@string/changepassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/transparent_btn"
-            android:textColor="@color/whites"/>
+            android:textColor="@color/whites" />
+
         <Button
             android:id="@+id/btn_logout"
             android:text="@string/logout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ff0000"
-            android:textColor="@color/whites"/>
+            android:textColor="@color/whites" />
 
     </LinearLayout>
 </LinearLayout>

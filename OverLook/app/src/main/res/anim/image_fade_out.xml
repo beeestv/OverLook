@@ -3,7 +3,7 @@
     <alpha
         android:fromAlpha="1.0"
         android:toAlpha="0.8"
-        android:duration="5000" />
+        android:duration="2000" />
     <scale
         android:pivotX="50%"
         android:pivotY="50%"
@@ -11,5 +11,5 @@
         android:toXScale="1.1"
         android:fromYScale="1.0"
         android:toYScale="1.1"
-        android:duration="5000" />
+        android:duration="2000" />
 </set>

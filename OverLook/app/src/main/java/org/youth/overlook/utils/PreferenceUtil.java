@@ -39,7 +39,7 @@ public class PreferenceUtil {
     }
 
     /**
-     * Çå¿ÕsharePreference
+     * clear sharePreference
      */
     public void clear(){
         editor.clear();

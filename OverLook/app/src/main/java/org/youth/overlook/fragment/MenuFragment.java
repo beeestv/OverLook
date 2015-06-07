@@ -1,6 +1,7 @@
 package org.youth.overlook.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -69,9 +70,10 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
         ((Button) view.findViewById(R.id.btn_about)).setOnClickListener(this);
         ((Button) view.findViewById(R.id.btn_changepassword)).setOnClickListener(this);
         ((Button) view.findViewById(R.id.btn_logout)).setOnClickListener(this);
+        ((Button) view.findViewById(R.id.btn_newaction)).setOnClickListener(this);
         actionListView = (ListView) view.findViewById(R.id.action_list);
 
-        phoneNumber = new PreferenceUtil(getActivity()).getValue("phoneNumber");
+        phoneNumber = new PreferenceUtil(getActivity()).getValue("phonenumber");
         Log.d("jdbc", phoneNumber);
         listLoadTask = new LoadTask();
         listLoadTask.execute();
@@ -83,13 +85,11 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
      * 初始化actionList
      */
     public void initActionList() {
-        Log.d("ASYCN_TASK", actionNameList.toString());
         ListAdapter mAdapter = new ArrayAdapter<String>(getActivity(), R.layout.listview_item1, actionNameList);
         actionListView.setAdapter(mAdapter);
         actionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                myMapFragment.didQuery.put(myMapFragment.actionid, false);//切换action时把didQuery设为false
                 actionname = actionNameList.get(position);
                 actionid = actionIdList.get(position);
                 preferenceUtil.putValues("actionid", actionid);//把id写入preference
@@ -109,8 +109,16 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.btn_newaction:{
+                myMainActivity.inviteMembers(true);
+                break;
+            }
             case R.id.btn_about: {
-                //TODO:弹出AlertDialog展示软件相关信息
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("关于")
+                        .setMessage("因为一些暂时无法解决的bug\r\n有时需点击右上角的定位按钮\r\n方可正常显示数据\r\n对此我深感抱歉\r\n我会尽快修复\r\n\r\n感谢使用这款app，我的朋友\r\n这是我完成的第一款app\r\n我会持续维护它\r\n如果您发现了bug\r\n希望您能通过邮件告知于我\r\n万分感谢\r\n\n开发者：faultyman\r\n无能的完美主义者\r\n邮箱：faultymanhzw@163.com")
+                        .setNegativeButton("确定", null)
+                        .show();
                 break;
             }
             case R.id.btn_changepassword: {
@@ -143,7 +151,6 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
             param.add(phoneNumber);
             try {
                 List<Map<String, Object>> list = sqlUtil.queryResults(sql, param);
-                Log.d("ASYNC_TASK", list.toString());
                 if (list.size() != 0) {
                     for (int i = 0; i < list.size(); i++) {
                         Map<String, Object> map = list.get(i);
@@ -179,7 +186,7 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
                     String phone = (String) phoneMap.get("phone");
                     boolean newAccount = false;
                     Intent intent = new Intent(myMainActivity, RegisterPasswordActivity.class);
-                    intent.putExtra("phoneNumber", phone);
+                    intent.putExtra("phonenumber", phone);
                     intent.putExtra("newAccount", newAccount);
                     myMainActivity.startActivity(intent);
                 }
@@ -187,8 +194,8 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
         });
         //带着当前登录用户的phoneNumber和非新账户标记进入短信验证界面
         Map<String, String> map = new HashMap<String, String>();
-        String phoneNumber = (new PreferenceUtil(myMainActivity)).getValue("phoneNumber");
-        map.put("phoneNumber", phoneNumber);
+        String phoneNumber = (new PreferenceUtil(myMainActivity)).getValue("phonenumber");
+        map.put("phonenumber", phoneNumber);
         map.put("newAccount", String.valueOf(false));
         registerPage.show(getActivity(), map);
     }

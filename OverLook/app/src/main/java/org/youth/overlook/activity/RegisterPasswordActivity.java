@@ -84,7 +84,7 @@ public class RegisterPasswordActivity extends Activity {
             if(getIntent().getBooleanExtra("newAccount",true) ) {
                 String sql = "insert into userinfo(phonenumber,password,registerdate) values(?,?,?)";
                 List<Object> params = new ArrayList<Object>();
-                params.add(getIntent().getStringExtra("phoneNumber"));
+                params.add(getIntent().getStringExtra("phonenumber"));
                 params.add(password);
                 params.add(new Date());
 
@@ -93,7 +93,7 @@ public class RegisterPasswordActivity extends Activity {
                 String sql = "update userinfo set password=? where phonenumber=?";
                 List<Object> params = new ArrayList<Object>();
                 params.add(password);
-                params.add(getIntent().getStringExtra("phoneNumber"));
+                params.add(getIntent().getStringExtra("phonenumber"));
                 insert(sql, params);
             }
         } else {
