@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Administrator on 2015/5/21.
+ * 获取自己的locationId 和 集合点destinationId
  */
 public class InitUtil {
 

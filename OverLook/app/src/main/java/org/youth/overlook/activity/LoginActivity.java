@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.BoringLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +20,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import org.json.JSONObject;
 import org.youth.overlook.R;
+import org.youth.overlook.bean.User;
 import org.youth.overlook.utils.SQLUtil;
 import org.youth.overlook.utils.PreferenceUtil;
 
@@ -35,10 +39,6 @@ import cn.smssdk.gui.RegisterPage;
 
 
 public class LoginActivity extends Activity {
-
-    private final int CANLOGIN = 0;
-    private final int LOGINFAILED = 1;
-
     private PreferenceUtil preferenceUtil;
     private SQLUtil SQLUtil;
     private EditText et_phonenumber;
@@ -48,31 +48,7 @@ public class LoginActivity extends Activity {
     private String phoneNumber;
     private String password;
     private Context myContext;
-
-    private Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case CANLOGIN:
-                    if (canLogin == true) {
-                        dismissProgressDialog();
-                        preferenceUtil.putValues("didRemembered", String.valueOf(true));
-                        preferenceUtil.putValues("phonenumber", phoneNumber);
-                        preferenceUtil.putValues("password", password);
-                        Log.d("jdbc", preferenceUtil.getValue("phonenumber"));
-                        Log.d("jdbc", preferenceUtil.getValue("password"));
-                        Intent intent = new Intent(myContext, MainActivity.class);
-                        myContext.startActivity(intent);
-                        finish();
-                    }
-                    break;
-                case LOGINFAILED:
-                    dismissProgressDialog();
-                    Toast.makeText(myContext, "账号或密码错误，请重新输入", Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        }
-
-    };
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,46 +176,61 @@ public class LoginActivity extends Activity {
     }
 
     public void query(final String sql, final List<Object> params) {
-        new Thread() {
-            public void run() {
-                Looper.prepare();
+
+        new AsyncTask<String, Integer, Boolean>() {
+            @Override
+            protected Boolean doInBackground(String... param) {
                 try {
                     List<Map<String, Object>> list = SQLUtil.queryResults(sql, params);
-                    Log.d("jdbc", "query succeed.");
-                    Log.d("jdbc", list.toString());
-                    Log.d("jdbc", String.valueOf(list.size()));
+                    Log.d("ol_jdbc", "query succeed.");
+                    Log.d("ol_jdbc", "user result list----->" + list.toString());
+                    Log.d("ol_jdbc", String.valueOf(list.size()));
 
                     Message msg = new Message();
 
                     if (list.size() != 0) {
                         Map<String, Object> map = list.get(0);
                         if (password.equals(String.valueOf(map.get("password")))) {
-                            String sql = "update userinfo set latestlogin=? where phonenumber=?";
+                            //得到当前时间
+                            Date date = new Date();
+
+                            //装载user bean
+                            user = new User();
+                            loadUser(user, map);
+
+                            //更新最后登录时间
+                            String sql = "update userinfo set lastlogintime=? where phonenumber=?";
                             List<Object> params = new ArrayList<Object>();
-                            params.add(new Date());
+                            params.add(date);
                             params.add(phoneNumber);
                             update(sql, params);
-
                             canLogin = true;
-                            msg.what = CANLOGIN;
-                            handler.sendMessage(msg);
                         } else {
-                            msg.what = LOGINFAILED;
-                            handler.sendMessage(msg);
                             Log.d("jdbc", "密码错误");
                         }
                     } else {
-                        msg.what = LOGINFAILED;
-                        handler.sendMessage(msg);
                         Log.d("jdbc", "账号不存在");
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    dismissProgressDialog();
-                    Toast.makeText(myContext, "验证出错", Toast.LENGTH_LONG).show();
+                }
+                return canLogin;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean s) {
+                dismissProgressDialog();
+                if (canLogin) {
+                    preferenceUtil.putValues("didRemembered", String.valueOf(true));
+                    preferenceUtil.putUser(user);
+                    Intent intent = new Intent(myContext, ActionActivity.class);
+                    myContext.startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(myContext, "账号或密码错误，请重新输入", Toast.LENGTH_SHORT).show();
                 }
             }
-        }.start();
+        }.execute();
     }
 
     public void update(final String sql, final List<Object> params) {
@@ -253,6 +244,21 @@ public class LoginActivity extends Activity {
                 }
             }
         }.start();
+    }
+
+    /**
+     * 装载User
+     * @param user 空对象
+     * @param map 一条数据库记录
+     */
+    private void loadUser(User user, Map<String, Object> map){
+        user.setPhonenumber((String)(map.get("phonenumber")));
+        user.setPassword((String)(map.get("password")));
+        user.setContactAmount((int)(map.get("contactamount")));
+        user.setContactUploadTime((Date)(map.get("contactuploadtime")));
+        user.setLastLoginTime((Date)(map.get("lastlogintime")));
+        user.setNickname((String)(map.get("nickname")));
+        user.setRegisterTime((Date)(map.get("registertime")));
     }
 
     protected void onResume() {

@@ -1,6 +1,5 @@
 package org.youth.overlook.fragment;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -43,8 +42,8 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
 
     private ListView actionListView;
 
-    private List<String> actionIdList = new ArrayList<String>();
-    private List<String> actionNameList = new ArrayList<String>();
+    private List<String> actionIdList = new ArrayList<>();
+    private List<String> actionNameList = new ArrayList<>();
     private String phoneNumber;
     public LoadTask listLoadTask;
 
@@ -84,7 +83,7 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
     /**
      * 初始化actionList
      */
-    public void initActionList() {
+    public void loadActionList() {
         ListAdapter mAdapter = new ArrayAdapter<String>(getActivity(), R.layout.listview_item1, actionNameList);
         actionListView.setAdapter(mAdapter);
         actionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -168,7 +167,7 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(String s) {
-            initActionList();
+            loadActionList();
         }
     }
 

@@ -27,6 +27,7 @@ import org.youth.overlook.activity.InvitationActivity;
 import org.youth.overlook.utils.PreferenceUtil;
 import org.youth.overlook.utils.SQLUtil;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,13 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Large screen devices (such as tablets) are supported by replacing the ListView
- * with a GridView.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
- * interface.
+ * 邀请Fragment
  */
 public class InvitationFragment extends Fragment {
 
@@ -259,7 +254,13 @@ public class InvitationFragment extends Fragment {
                     String sql = "insert into actioninfo (actionid,builder,actionname) values (?,?,?)";
                     params.add(actionid);
                     params.add(builder);
-                    params.add(actionName.getText().toString());
+                    try {
+                        params.add(new String(actionName.getText().toString().getBytes(), "utf-8"));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+
+                    Log.d("actionname",actionName.getText().toString());
                     try {
                         flag = sqlUtil.updateByPrepareStatment(sql, params);
                     } catch (SQLException e) {

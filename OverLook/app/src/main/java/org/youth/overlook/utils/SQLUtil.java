@@ -19,9 +19,9 @@ import java.util.Map;
 public class SQLUtil {
 
     private final String DRIVER = "com.mysql.jdbc.Driver";
-    private  String USERNAME = "root";
-    private  String PASSWORD = "rbi0Npvwlyxc";
-    private  String URL = "jdbc:mysql://121.43.234.220:3306/overlook";
+    private String USERNAME = "root";
+    private String PASSWORD = "rbi0Npvwlyxc";
+    private String URL = "jdbc:mysql://121.43.234.220:3306/overlook?useUnicode=true&characterEncoding=utf8";
 
     private Connection connection;
     private PreparedStatement pstmt;
@@ -33,14 +33,16 @@ public class SQLUtil {
     public SQLUtil() {
         try {
             Class.forName(DRIVER);
-            Log.d("jdbc", "Register driver succeed.");
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            Log.d("ol_jdbc", "Connect mysql succeed.");
         } catch (Exception e) {
-            Log.d("jdbc", e.getMessage());
+            Log.d("ol_jdbc", e.getMessage());
         }
     }
 
     /**
      * 使用自定义URL、数据库账号密码构造连接工具
+     *
      * @param url
      * @param username
      * @param password
@@ -48,43 +50,52 @@ public class SQLUtil {
     public SQLUtil(String url, String username, String password) {
         try {
             Class.forName(DRIVER);
-            Log.d("jdbc", "Register driver succeed.");
             this.URL = url;
             this.USERNAME = username;
             this.PASSWORD = password;
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            Log.d("ol_jdbc", "Connect mysql succeed.");
         } catch (Exception e) {
-            Log.d("jdbc", e.getMessage());
+            Log.d("ol_jdbc", e.getMessage());
         }
     }
 
     /**
      * 释放连接
+     *
      * @throws SQLException
      */
-    public void releaseConnection() throws SQLException {
+    public void releaseConnection() {
+        try {
         if (resultSet != null) {
             resultSet.close();
+            resultSet = null;
         }
         if (pstmt != null) {
             pstmt.close();
+            pstmt = null;
         }
         if (connection != null) {
             connection.close();
             connection = null;
         }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     /**
      * update、insert、delete语句
+     *
      * @param sql
      * @param params
      * @return
      * @throws SQLException
      */
     public boolean updateByPrepareStatment(String sql, List<Object> params) throws SQLException {
-        if(connection == null){
+        if (connection == null) {
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            Log.d("jdbc","Connect succeed.");
+            Log.d("ol_jdbc", "Connect succeed.");
         }
         boolean flag = false;
         int result = -1;
@@ -101,9 +112,9 @@ public class SQLUtil {
      * @throws SQLException
      */
     public List<Map<String, Object>> queryResults(String sql, List<Object> params) throws SQLException {
-        if(connection == null){
+        if (connection == null) {
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            Log.d("jdbc","Connect succeed.");
+            Log.d("ol_jdbc", "Connect succeed.");
         }
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         this.fillPlaceholder(sql, params);
@@ -127,6 +138,7 @@ public class SQLUtil {
 
     /**
      * 占位符填充
+     *
      * @param sql
      * @param params
      */

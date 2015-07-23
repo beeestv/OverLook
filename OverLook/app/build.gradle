@@ -4,8 +4,6 @@ android {
     compileSdkVersion 19
     buildToolsVersion "21.1.2"
 
-    android {compileOptions.encoding = "UTF-8"}
-
     defaultConfig {
         applicationId "org.youth.overlook"
         minSdkVersion 12
@@ -19,6 +17,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "GBK"
 }
 
 dependencies {

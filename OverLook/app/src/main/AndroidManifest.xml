@@ -25,8 +25,7 @@
             android:name="com.amap.api.v2.apikey"
             android:value="b9fe014c800e7cfe7e130df31a5ac04c" />
 
-        <activity
-            android:name=".activity.MainActivity"/>
+        <activity android:name=".activity.MainActivity" />
         <activity
             android:name=".activity.LoginActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar" />
@@ -50,6 +49,10 @@
         <activity
             android:name=".activity.InvitationActivity"
             android:label="@string/title_activity_invitation" >
+        </activity>
+        <activity
+            android:name=".activity.ActionActivity"
+            android:label="@string/title_activity_action" >
         </activity>
     </application>
 
